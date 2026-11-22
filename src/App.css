@@ -1,0 +1,224 @@
+:root {
+  --charcoal: #1c1c1e;
+}
+
+.app {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --page-pad-x: 8px;
+  --page-pad-y: clamp(12px, 2.5vh, 24px);
+  --title-size: clamp(1.75rem, 7vw, 2.5rem);
+  --title-gap: clamp(10px, 2.5vh, 24px);
+  --grid-gap: 8px;
+  --page-width: min(100vw, 350px);
+  --viewport-height: 100vh;
+  --rows: 6;
+  --columns: 2;
+  --nav-size: 44px;
+  --header-height: max(var(--nav-size), calc(1.1 * var(--title-size)));
+  --available-height: calc(
+    var(--viewport-height) - var(--safe-top) - var(--safe-bottom) -
+      2 * var(--page-pad-y) - var(--header-height) - var(--title-gap) -
+      (var(--rows) - 1) * var(--grid-gap)
+  );
+  --button-width: calc(
+    (var(--page-width) - 2 * var(--page-pad-x) - (var(--columns) - 1) * var(--grid-gap)) /
+      var(--columns)
+  );
+  --button-height: calc(var(--available-height) / var(--rows));
+
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--title-gap);
+  width: var(--page-width);
+  height: var(--viewport-height);
+  margin-inline: auto;
+  padding: calc(var(--safe-top) + var(--page-pad-y)) var(--page-pad-x)
+    calc(var(--safe-bottom) + var(--page-pad-y));
+  overflow: hidden;
+  background-color: var(--charcoal);
+  text-align: center;
+}
+
+@supports (height: 100dvh) {
+  .app {
+    --viewport-height: 100dvh;
+  }
+}
+
+.app.phrases,
+.app.requests {
+  --rows: 7;
+  --columns: 1;
+}
+
+.app.food {
+  --rows: 7;
+  --columns: 2;
+}
+
+.app.states {
+  --rows: 6;
+  --columns: 2;
+}
+
+.page-header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  height: var(--header-height);
+}
+
+.nav-button {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nav-size);
+  height: var(--nav-size);
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-button:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
+.nav-button:active:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.nav-button:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: #ffffff;
+  font-size: var(--title-size);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  container-type: inline-size;
+}
+
+.title-button {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: -8px 0;
+  padding: 7px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  font: inherit;
+  font-size: min(var(--title-size), 13cqw);
+  letter-spacing: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.title-button:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
+.title-button:active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.title-button:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.word-grid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+  grid-auto-rows: var(--button-height);
+  gap: var(--grid-gap);
+  container-type: inline-size;
+}
+
+.word-button {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: clamp(14px, 13cqw, 28px);
+  font-family: inherit;
+  font-size: clamp(
+    14px,
+    min(calc(var(--button-width) * 0.17), calc(var(--button-height) * 0.26)),
+    28px
+  );
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.word-button[data-word="parking-lot"] {
+  white-space: normal;
+  line-height: 1.1;
+}
+
+.word-button.is-active {
+  font-size: clamp(
+    13px,
+    min(calc(var(--button-width) * 0.15), calc(var(--button-height) * 0.23)),
+    26px
+  );
+  transform: scale(0.96);
+  filter: brightness(0.92);
+}
+
+.word-button:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word-button {
+    transition: none;
+  }
+}
