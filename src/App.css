@@ -26,6 +26,16 @@
       var(--columns)
   );
   --button-height: calc(var(--available-height) / var(--rows));
+  --word-font-size: clamp(
+    14px,
+    min(calc(var(--button-width) * 0.17), calc(var(--button-height) * 0.26)),
+    28px
+  );
+  --active-font-size: clamp(
+    13px,
+    min(calc(var(--button-width) * 0.15), calc(var(--button-height) * 0.23)),
+    26px
+  );
 
   box-sizing: border-box;
   display: flex;
@@ -62,6 +72,47 @@
 .app.states {
   --rows: 6;
   --columns: 2;
+}
+
+.app.lang-en {
+  --reference-button-width: calc(
+    (var(--page-width) - 2 * var(--page-pad-x) - var(--grid-gap)) / 2
+  );
+  --reference-button-height: calc(
+    (var(--viewport-height) - var(--safe-top) - var(--safe-bottom) -
+      2 * var(--page-pad-y) - var(--header-height) - var(--title-gap) -
+      5 * var(--grid-gap)) / 6
+  );
+  --word-font-size: clamp(
+    16px,
+    min(
+      calc(var(--reference-button-width) * 0.2),
+      calc(var(--reference-button-height) * 0.34)
+    ),
+    36px
+  );
+  --active-font-size: clamp(
+    18px,
+    min(
+      calc(var(--reference-button-width) * 0.24),
+      calc(var(--reference-button-height) * 0.42)
+    ),
+    44px
+  );
+}
+
+.app.lang-ja,
+.app.lang-taigi {
+  --word-font-size: clamp(
+    16px,
+    min(calc(var(--button-width) * 0.19), calc(var(--button-height) * 0.32)),
+    34px
+  );
+  --active-font-size: clamp(
+    15px,
+    min(calc(var(--button-width) * 0.17), calc(var(--button-height) * 0.29)),
+    31px
+  );
 }
 
 .page-header {
@@ -175,20 +226,17 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  padding: 0;
+  padding: 0 6px;
   overflow: hidden;
   border: 0;
   border-radius: clamp(14px, 13cqw, 28px);
   font-family: inherit;
-  font-size: clamp(
-    14px,
-    min(calc(var(--button-width) * 0.17), calc(var(--button-height) * 0.26)),
-    28px
-  );
+  font-size: var(--word-font-size);
   font-weight: 600;
-  line-height: 1;
+  line-height: 1.1;
   letter-spacing: 0;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: break-word;
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -197,19 +245,18 @@
   transition: transform 120ms ease, filter 120ms ease;
 }
 
-.word-button[data-word="parking-lot"] {
-  white-space: normal;
-  line-height: 1.1;
-}
-
 .word-button.is-active {
-  font-size: clamp(
-    13px,
-    min(calc(var(--button-width) * 0.15), calc(var(--button-height) * 0.23)),
-    26px
-  );
+  font-size: var(--active-font-size);
   transform: scale(0.96);
   filter: brightness(0.92);
+}
+
+.app.lang-ja .word-button.is-active {
+  font-size: clamp(
+    18px,
+    min(calc(var(--button-width) * 0.24), calc(var(--button-height) * 0.42)),
+    44px
+  );
 }
 
 .word-button:focus-visible {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import './App.css';
 
 const LANGUAGES = ['en', 'ja', 'taigi'];
@@ -729,6 +729,63 @@ function App() {
   const speakTimer = useRef(null);
   const utteranceRef = useRef(null);
   const audioRef = useRef(null);
+  const wordButtonRefs = useRef([]);
+
+  useLayoutEffect(() => {
+    if (language !== 'en' && language !== 'ja') {
+      return undefined;
+    }
+
+    const requireSingleLine = language === 'ja';
+    const buttons = wordButtonRefs.current;
+
+    const fitButtons = () => {
+      buttons.forEach((button) => {
+        if (!button) {
+          return;
+        }
+
+        button.style.fontSize = '';
+        const baseSize = parseFloat(window.getComputedStyle(button).fontSize);
+        if (!Number.isFinite(baseSize)) {
+          return;
+        }
+
+        const range = document.createRange();
+        range.selectNodeContents(button);
+        let size = baseSize;
+
+        while (size > 12) {
+          const textRect = range.getBoundingClientRect();
+          const lines =
+            typeof range.getClientRects === 'function'
+              ? range.getClientRects().length
+              : 1;
+          const fits =
+            textRect.width <= button.clientWidth + 2 &&
+            textRect.height <= button.clientHeight + 2 &&
+            (!requireSingleLine || lines <= 1);
+          if (fits) {
+            break;
+          }
+          size -= 1;
+          button.style.fontSize = `${size}px`;
+        }
+      });
+    };
+
+    fitButtons();
+    window.addEventListener('resize', fitButtons);
+
+    return () => {
+      window.removeEventListener('resize', fitButtons);
+      buttons.forEach((button) => {
+        if (button) {
+          button.style.fontSize = '';
+        }
+      });
+    };
+  }, [language, pageIndex, activeWord]);
 
   useEffect(() => {
     const synth = canSpeak() ? window.speechSynthesis : null;
@@ -839,7 +896,7 @@ function App() {
   const title = TITLES[page.id][language];
 
   return (
-    <main className={`app ${page.id}`}>
+    <main className={`app ${page.id} lang-${language}`}>
       <div className="page-header">
         <button
           type="button"
@@ -885,6 +942,9 @@ function App() {
             <button
               key={word.id}
               type="button"
+              ref={(element) => {
+                wordButtonRefs.current[index] = element;
+              }}
               className={`word-button${isActive ? ' is-active' : ''}`}
               data-word={word.id}
               style={PAGE_STYLES[pageIndex][index]}
